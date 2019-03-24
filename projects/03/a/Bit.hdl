@@ -15,5 +15,10 @@ CHIP Bit {
 
     PARTS:
     // Put your code here:
-    // აქ იყო სანდრო 23.03.19
+    
+    
+    DFF(in = muxedOut, out = out, out = nextIn);
+    Mux(a = nextIn, b = in, sel = load, out = muxedOut);
+
+    
 }
