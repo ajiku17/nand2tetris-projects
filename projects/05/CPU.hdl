@@ -54,7 +54,6 @@ CHIP CPU {
     DRegister(in = ALUOutput, load = DLoad , out = DOut);
 
 
-
     Mux16(a = AOut, b = inM, sel = instruction[12], out = ALUSecondInput);
     ALU(x = DOut, y = ALUSecondInput, zx = instruction[11], nx = instruction[10], zy = instruction[9], 
     					ny = instruction[8], f = instruction[7], no = instruction[6], 
@@ -74,11 +73,15 @@ CHIP CPU {
 
     // And(a = notXorNeg, b = notXorZr, out = negAndZr);
     // And(a = negAndZr, b = notXorPos, out = jmpDir);
-    // And(a = jmpDir, b = instruction[15], out = jmp);
 
+    Or(a = instruction[2], b = instruction[1], out = and);
+    Or(a=and, b=instruction[0], out=notNullJump);
+    Not(in=notNullJump, out=nullJump);
     Or(a = notXorNeg, b = notXorZr, out = lessOrEqual);
     Or(a = notXorZr, b = notXorPos, out = greaterOrEqual);
-    And(a = lessOrEqual, b = greaterOrEqual, out = jmp);
+    And(a = lessOrEqual, b = greaterOrEqual, out = jmpDir);
+    And(a = jmpDir, b = instruction[15], out = jmpDir2);
+    And(a = jmpDir2, b = notNullJump, out = jmp);
     Not(in = jmp, out = inc);
 
     // Or(a = instruction[0], b = instruction[1], out = or);
