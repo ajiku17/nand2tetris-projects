@@ -58,35 +58,19 @@ CHIP CPU {
     ALU(x = DOut, y = ALUSecondInput, zx = instruction[11], nx = instruction[10], zy = instruction[9], 
     					ny = instruction[8], f = instruction[7], no = instruction[6], 
     						out = ALUOutput, out = outM, zr = ALUoutZero, ng = ALUoutNeg);
-
-    Xor(a = ALUoutNeg, b = instruction[2], out = xorNeg);
-    Xor(a = ALUoutZero, b = instruction[1], out = xorZr);
     
-    Or(a = ALUoutZero, b = ALUoutNeg, out = ZrOrNg); // MAY NEED XOR
+    Or(a = ALUoutZero, b = ALUoutNeg, out = ZrOrNg); 
     Not(in = ZrOrNg, out = Pos);
 
-    Xor(a = Pos, b = instruction[0], out = xorPos);
+    And(a = ALUoutNeg, b = instruction[2], out = NegOk);
+    And(a = ALUoutZero, b = instruction[1], out = ZeroOk);
+    And(a = Pos, b = instruction[0], out = PosOk);
 
-    Not(in = xorNeg, out = notXorNeg);
-    Not(in = xorZr, out = notXorZr);
-    Not(in = xorPos, out = notXorPos);
+    Or(a = NegOk, b = ZeroOk, out = NegOrZero);
+    Or(a = NegOrZero, b = PosOk, out = jmpDir);
 
-    // And(a = notXorNeg, b = notXorZr, out = negAndZr);
-    // And(a = negAndZr, b = notXorPos, out = jmpDir);
-
-    Or(a = instruction[2], b = instruction[1], out = and);
-    Or(a=and, b=instruction[0], out=notNullJump);
-    Not(in=notNullJump, out=nullJump);
-    Or(a = notXorNeg, b = notXorZr, out = lessOrEqual);
-    Or(a = notXorZr, b = notXorPos, out = greaterOrEqual);
-    And(a = lessOrEqual, b = greaterOrEqual, out = jmpDir);
-    And(a = jmpDir, b = instruction[15], out = jmpDir2);
-    And(a = jmpDir2, b = notNullJump, out = jmp);
+    And(a = jmpDir, b = instruction[15], out = jmp);
     Not(in = jmp, out = inc);
-
-    // Or(a = instruction[0], b = instruction[1], out = or);
-    // Or(a = or, b = instruction[2], out = notInc);
-    // Not(in = notInc, out = inc);
 
     PC(in = AOut, load = jmp, inc = inc, reset = reset, out[0..14] = pc);
 }
