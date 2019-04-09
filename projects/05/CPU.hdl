@@ -40,4 +40,50 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    Mux16(a = instruction[0..15], b = ALUOutput, sel = instruction[15], out = ARegIn);
+    	
+    Not(in = instruction[15], out = notOpCode);
+
+    Or(a = instruction[5], b = notOpCode, out = ALoad);
+    And(a = instruction[4], b = instruction[15], out = DLoad);
+    And(a = instruction[3], b = instruction[15], out = writeM);
+
+
+    ARegister(in = ARegIn, load = ALoad, out = AOut, out[0..14] = addressM); // TODO
+    
+    DRegister(in = ALUOutput, load = DLoad , out = DOut);
+
+
+
+    Mux16(a = AOut, b = inM, sel = instruction[12], out = ALUSecondInput);
+    ALU(x = DOut, y = ALUSecondInput, zx = instruction[11], nx = instruction[10], zy = instruction[9], 
+    					ny = instruction[8], f = instruction[7], no = instruction[6], 
+    						out = ALUOutput, out = outM, zr = ALUoutZero, ng = ALUoutNeg);
+
+    Xor(a = ALUoutNeg, b = instruction[2], out = xorNeg);
+    Xor(a = ALUoutZero, b = instruction[1], out = xorZr);
+    
+    Or(a = ALUoutZero, b = ALUoutNeg, out = ZrOrNg); // MAY NEED XOR
+    Not(in = ZrOrNg, out = Pos);
+
+    Xor(a = Pos, b = instruction[0], out = xorPos);
+
+    Not(in = xorNeg, out = notXorNeg);
+    Not(in = xorZr, out = notXorZr);
+    Not(in = xorPos, out = notXorPos);
+
+    // And(a = notXorNeg, b = notXorZr, out = negAndZr);
+    // And(a = negAndZr, b = notXorPos, out = jmpDir);
+    // And(a = jmpDir, b = instruction[15], out = jmp);
+
+    Or(a = notXorNeg, b = notXorZr, out = lessOrEqual);
+    Or(a = notXorZr, b = notXorPos, out = greaterOrEqual);
+    And(a = lessOrEqual, b = greaterOrEqual, out = jmp);
+    Not(in = jmp, out = inc);
+
+    // Or(a = instruction[0], b = instruction[1], out = or);
+    // Or(a = or, b = instruction[2], out = notInc);
+    // Not(in = notInc, out = inc);
+
+    PC(in = AOut, load = jmp, inc = inc, reset = reset, out[0..14] = pc);
 }
