@@ -5,6 +5,8 @@ segmentTable = {};
 def buildTable():
 	segmentTable["local"] = "LCL"
 	segmentTable["argument"] = "ARG"
+	segmentTable['this'] = "THIS"
+	segmentTable['that'] = "THAT"
 	segmentTable["temp"] = "5"
 	
 
@@ -85,7 +87,6 @@ def main():
 						elif(line[1].startswith('temp')):
 							asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 							asmFile.write(pushTemp(int(line[2])))
-							print(pushTemp(int(line[2])))
 						elif(line[1].startswith('pointer')):
 							asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 							asmFile.write(pushPointer(int(line[2])))
