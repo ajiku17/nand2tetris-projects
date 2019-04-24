@@ -5,8 +5,6 @@ segmentTable = {};
 def buildTable():
 	segmentTable["local"] = "LCL"
 	segmentTable["argument"] = "ARG"
-	segmentTable["this"] = "THIS"
-	segmentTable["that"] = "THAT"
 	segmentTable["temp"] = "5"
 	
 
@@ -40,19 +38,15 @@ def pushStatic(name, index):
 	return "@" + name + "." + index + "\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 
 def pushPointer(index):
-	# print index
 	if index == 0:
 		return "@THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 	else:
-		print (index)
 		return "@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"
 
 def popPointer(index):
-	# print index;
 	if index == 0:
 		return "@SP\nM=M-1\n@SP\nA=M\nD=M\n@THIS\nM=D\n"
 	else:
-		print(index)
 		return "@SP\nM=M-1\n@SP\nA=M\nD=M\n@THAT\nM=D\n"
 
 def popTemp(index):
@@ -95,7 +89,6 @@ def main():
 						elif(line[1].startswith('pointer')):
 							asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 							asmFile.write(pushPointer(int(line[2])))
-							# print('push pointer')
 						elif(line[1].startswith('static')):
 							asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 							asmFile.write(pushStatic(sys.argv[1].split(".")[0].split('/')[-1], line[2]))
@@ -120,9 +113,7 @@ def main():
 							asmFile.write(popPointer(int(line[2])))
 						elif(line[1].startswith('temp')):
 							asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
-							print(line);
 							asmFile.write(popTemp(int(line[2])))
-							print(popTemp(int(line[2])))
 					elif line[0].startswith('add'):
 						asmFile.write(expression("+"))
 					elif line[0].startswith('sub'):
@@ -144,11 +135,5 @@ def main():
 					elif line[0].startswith("gt"):
 						asmFile.write(getBoolean(jmpCounter, "JLT"))
 						jmpCounter = jmpCounter + 1
-
-
-				# line = line[0]
-					print(line)
-
-	print("Hello World")
 
 main()
