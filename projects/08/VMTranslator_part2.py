@@ -3,7 +3,7 @@ import glob
 import os
 
 returnCounter = 0
-currFnName = ""
+currFnName = "Sys.main"
 segmentTable = {}
 
 def buildTable():
@@ -103,7 +103,7 @@ def returnStatement():
 	return "@LCL\nD=M\n@endFrame\nM=D\n@5\nD=A\n@endFrame\nD=M-D\nA=D\nD=M\n@retAddr\nM=D\n@SP\nM=M-1\n@SP\nA=M\nD=M\n@ARG\nA=M\nM=D\n@ARG\nD=M+1\n@SP\nM=D\n@endFrame\nMD=M-1\nA=D\nD=M\n@THAT\nM=D\n@endFrame\nMD=M-1\nA=D\nD=M\n@THIS\nM=D\n@endFrame\nMD=M-1\nA=D\nD=M\n@ARG\nM=D\n@endFrame\nMD=M-1\nA=D\nD=M\n@LCL\nM=D\n@retAddr\nA=M\n0;JMP\n"
 
 def VMinit():
-	return "@256\n" + "D=A\n" + "@SP\n" + "M=D\n"# + callFunction('Sys.init', 0) 
+	return "@256\n" + "D=A\n" + "@SP\n" + "M=D\n" + callFunction('Sys.init', 0) 
 
 def main():
 	buildTable()
