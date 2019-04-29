@@ -77,7 +77,6 @@ def repositionLCL():
 	return "@SP\nD=M\n@LCL\nM=D\n"
 
 def retLabel(fnName):
-	print(fnName + "$ret." + str(returnCounter))
 	return fnName + "$ret." + str(returnCounter)
 
 def pushRet(fnName):
@@ -112,27 +111,22 @@ def main():
 		asmFile = open(sys.argv[1].split('.')[0] + ".asm", "w+")
 	else:
 		f = glob.glob(sys.argv[1] + "*.vm")
-		print(sys.argv[1].split('/'))
 		asmFile = open(sys.argv[1] + sys.argv[1].split('/')[-2] + ".asm", "w+")
-		print(asmFile)
 
 	jmpCounter = 1
 	asmFile.write(VMinit());
 
 	for filename in f:
 		file = open(filename)
-		print(filename)
 		for line in file:
 			if line:
 				line = line.split()
 				if line:	
-					# print(line)
 					if not line[0].startswith('//'):
 						if(line[0].startswith('push')):
 							if(line[1].startswith('constant')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 								asmFile.write(pushConstant(line[2]))
-								# print('WHAT')
 							elif(line[1].startswith('argument')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 								asmFile.write(pushStatement('argument', line[2]))
@@ -153,7 +147,7 @@ def main():
 								asmFile.write(pushPointer(int(line[2])))
 							elif(line[1].startswith('static')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
-								asmFile.write(pushStatic(sys.argv[1].split(".")[0].split('/')[-1], line[2]))
+								asmFile.write(pushStatic(filename.split('/')[-1], line[2]))
 						elif(line[0].startswith('pop')):
 							if(line[1].startswith('local')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
@@ -169,7 +163,7 @@ def main():
 								asmFile.write(popStatement('that', line[2]))
 							elif(line[1].startswith('static')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
-								asmFile.write(popStatic(sys.argv[1].split(".")[0].split('/')[-1], line[2]))
+								asmFile.write(popStatic(filename.split('/')[-1], line[2]))
 							elif(line[1].startswith('pointer')):
 								asmFile.write("//" + line[0] + " " + line[1] + " " + line[2] + "\n")
 								asmFile.write(popPointer(int(line[2])))
