@@ -1,0 +1,74 @@
+class Pong{
+
+	field Ball b;
+	field Paddle p;
+	field int score;
+
+	constructor Pong new(){
+		let b = Ball.new();
+		let p = Paddle.new();
+		let score = 0;
+		do Screen.drawRectangle(0, 238, 511, 240);
+		do Output.moveCursor(22,0);
+		do Output.printString("Score: 0");
+		return this;
+	}
+
+	method void run(){
+		var char key;
+		var int direction; // 1 - left, 2 - right
+		var boolean gameOn;
+		let gameOn = true;
+		while(gameOn){
+
+			while(((key = 0) & gameOn)){
+				let key = Keyboard.keyPressed();
+				if(b.isOut() | (key = 81)){
+					let gameOn = false;
+				}
+				if(b.checkForCollisions(p)){
+					let score = score + 1;
+					do Output.moveCursor(22,7);
+					do Output.printInt(score);
+				}
+				do b.moveBall();
+				if(direction = 1){
+					do p.moveLeft();
+				}else{
+					do p.moveRight();
+				}
+				do Sys.wait(10);
+			}
+
+
+			if(key = 130){
+				let direction = 1;
+			}
+			if(key = 132){
+				let direction = 2;
+			}
+
+			while((~(key = 0) & gameOn)){
+				let key = Keyboard.keyPressed();
+				if(b.isOut() | (key = 81)){
+					let gameOn = false;
+				}
+				if(b.checkForCollisions(p)){
+					let score = score + 1;
+					do Output.moveCursor(22,7);
+					do Output.printInt(score);
+				}
+				do b.moveBall();
+				if(direction = 1){
+					do p.moveLeft();
+				}else{
+					do p.moveRight();
+				}
+				do Sys.wait(10);
+				
+			}
+
+		}	
+		return;
+	}
+}

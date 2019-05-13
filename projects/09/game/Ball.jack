@@ -1,0 +1,112 @@
+class Ball{
+
+	field int vx, vy, x, y, r;
+	field boolean outOfBounds;
+
+	constructor Ball new(){
+		let r = 6;
+		let x = 100;
+		let y = 100;
+		let vx = 1;
+		let vy = 1;
+		return this;
+	}
+
+	method void moveBall(){
+		do erase();
+		let x = x + vx;
+		let y = y + vy;
+		do draw();
+		return;
+	}
+
+	method boolean checkForCollisions(Paddle p){
+		if((x - r) = 0){
+			let vx = -vx;
+		}
+		if((x + (2 * r)) = 512){
+			let vx = -vx;
+		}
+		if((y - r) = 0){
+			let vy = -vy;
+		}
+		if((x < (p.getX() + p.getLength() + 2)) & (x > (p.getX() - 2)) & ((y + 1) > p.getY())){
+			let vy = -vy;
+			return true;
+		}
+		return false;
+	}
+
+	method int getX(){
+		return x;
+	}
+
+	method int getY(){
+		return y;
+	}	
+
+	method int getTop(){
+		return (x - r);
+	}
+
+	method int getBot(){
+		return (x + r);
+	}
+
+	method int getLeft(){
+		return (y + r);
+	}
+
+	method int getRight(){
+		return (y - r);
+	}
+
+	method boolean isOut(){
+		if((y + (2 * r)) > (245) ){
+			do Output.printString("OUT!");
+			do Output.println();
+			return true;
+		}
+
+		return false;
+	}
+
+	// method void checkFloorCollisions(){
+		
+	// 		let outOfBounds = false;
+	// 	}
+	// 	return;
+	// }
+
+	method void draw(){
+		do Screen.setColor(true);
+		do Screen.drawCircle(x, y, r);
+		return;
+	}
+
+
+	method void erase(){
+		do Screen.setColor(false);
+		do Screen.drawCircle(x, y, r);
+		return;
+	}
+
+	method void dispose(){
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	method void collidesWithPaddle(Paddle p){
+		if((x < (p.getX() + p.getLength() + 2)) & (x > (p.getX() - 2)) & ((y + 1) > p.getY())){
+			do Output.printInt(x);
+			do Output.println();
+			do Output.printInt(p.getX());
+			do Output.println();
+			do Output.printInt(p.getLength());
+			do Output.println();
+			do Output.printString("collision");
+			let vy = -vy;
+		}
+		return;
+	}
+}
