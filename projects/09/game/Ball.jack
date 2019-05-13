@@ -63,8 +63,6 @@ class Ball{
 
 	method boolean isOut(){
 		if((y + (2 * r)) > (245) ){
-			do Output.printString("OUT!");
-			do Output.println();
 			return true;
 		}
 
